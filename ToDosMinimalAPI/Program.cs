@@ -19,18 +19,23 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-//delegata do servisu
+
 //CRUD
-//app.MapGet("/todos", (IToDoService service) => service.GetAll());
+
+//Wykorzystanie delegaty do servisu
+
 app.MapGet("/todos", ToDoRequests.GetAll);
+app.MapGet("/todos/{id}",ToDoRequests.GetById);
+app.MapPost("/todos", ToDoRequests.Create);
+app.MapPut("/todos/{id}", ToDoRequests.Update);
+app.MapDelete("/todos/{id}",ToDoRequests.Delete);
 
-app.MapGet("/todos/{id}", ([FromServices]IToDoService service,[FromRoute] Guid id) => service.GetById(id));
-app.MapPost("/todos", (IToDoService service, [FromBody]ToDo toDo) => service.Create(toDo));
-app.MapPut("/todos/{id}", (IToDoService service, Guid id, ToDo toDo) => service.Update(toDo));
-app.MapDelete("/todos/{id}", (IToDoService service, Guid id) => service.Delete(id));
- //
+//Wykorzystanie lambdy
 
-
-
+//app.MapGet("/todos", (IToDoService service) => service.GetAll());
+//app.MapGet("/todos/{id}", ([FromServices]IToDoService service,[FromRoute] Guid id) => service.GetById(id));
+//app.MapPost("/todos", (IToDoService service, [FromBody]ToDo toDo) => service.Create(toDo));
+//app.MapPut("/todos/{id}", (IToDoService service, Guid id, ToDo toDo) => service.Update(toDo));
+//app.MapDelete("/todos/{id}", (IToDoService service, Guid id) => service.Delete(id));
 
 app.Run();
