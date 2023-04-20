@@ -1,13 +1,17 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ToDosMinimalAPI.ToDo;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Konfiguracja serwisów zalezności
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<IToDoService, ToDoService>();     
+builder.Services.AddSingleton<IToDoService, ToDoService>();
+//rejestracja validatora w kontenerze zalezności po to by był poprawnie wstrzykniety do metody Create Delete
+builder.Services.AddValidatorsFromAssemblyContaining(typeof (ToDoValidator));
 
 var app = builder.Build();
 

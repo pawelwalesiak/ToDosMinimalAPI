@@ -1,4 +1,7 @@
-﻿namespace ToDosMinimalAPI.ToDo
+﻿using FluentValidation;
+using System.ComponentModel.DataAnnotations;
+
+namespace ToDosMinimalAPI.ToDo
 {
     public static class ToDoRequests 
     {
@@ -53,8 +56,13 @@
             return Results.Ok(todo);
         }
 
-        public static IResult Create(IToDoService service, ToDo toDo)
+        public static IResult Create(IToDoService service, ToDo toDo, IValidator<ToDo> validator)
         {
+            var validationResult = validator.Validate(toDo);
+            if (!validationResult.IsValid)
+            {
+                return Results.BadRequest(validationResult.Errors);
+            }
             service.Create(toDo);
             return Results.Created($"/todos/{toDo.Id}", toDo);
         }
@@ -68,8 +76,13 @@
             service.Delete(id);
             return Results.NoContent();
         }
-        public static IResult Update(IToDoService service, Guid id, ToDo toDo) 
+        public static IResult Update(IToDoService service, Guid id, ToDo toDo, IValidator<ToDo> validator) 
         {
+            var validationResult = validator.Validate(toDo);
+            if (!validationResult.IsValid)
+            {
+                return Results.BadRequest(validationResult.Errors);
+            }
             var todo = service.GetById(id);
             if (todo == null)
             {
