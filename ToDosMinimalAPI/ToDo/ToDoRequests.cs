@@ -1,4 +1,7 @@
-﻿namespace ToDosMinimalAPI.ToDo
+﻿using FluentValidation;
+using System.ComponentModel.DataAnnotations;
+
+namespace ToDosMinimalAPI.ToDo
 {
     public static class ToDoRequests 
     {
@@ -17,10 +20,12 @@
                 .Produces(StatusCodes.Status404NotFound);
                 ;
             app.MapPost("/todos", ToDoRequests.Create)
-                .Produces<ToDo>(StatusCodes.Status201Created)   
+                .Produces<ToDo>(StatusCodes.Status201Created)
                 .Accepts<ToDo>("application/json")
+                .WithValidator<ToDo>()
                 ;
             app.MapPut("/todos/{id}", ToDoRequests.Update)
+                .WithValidator<ToDo>()
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces(StatusCodes.Status404NotFound)
                 .Accepts<ToDo>("application/json")
@@ -53,8 +58,9 @@
             return Results.Ok(todo);
         }
 
-        public static IResult Create(IToDoService service, ToDo toDo)
+        public static IResult Create(IToDoService service, ToDo toDo, IValidator<ToDo> validator)
         {
+           
             service.Create(toDo);
             return Results.Created($"/todos/{toDo.Id}", toDo);
         }
@@ -68,8 +74,9 @@
             service.Delete(id);
             return Results.NoContent();
         }
-        public static IResult Update(IToDoService service, Guid id, ToDo toDo) 
+        public static IResult Update(IToDoService service, Guid id, ToDo toDo, IValidator<ToDo> validator) 
         {
+            
             var todo = service.GetById(id);
             if (todo == null)
             {
