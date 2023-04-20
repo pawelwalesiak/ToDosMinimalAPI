@@ -7,14 +7,32 @@
 
         public static WebApplication RegisterEndpoints(this WebApplication app) 
         {
-            app.MapGet("/todos", ToDoRequests.GetAll);
-            app.MapGet("/todos/{id}", ToDoRequests.GetById);
-            app.MapPost("/todos", ToDoRequests.Create);
-            app.MapPut("/todos/{id}", ToDoRequests.Update);
-            app.MapDelete("/todos/{id}", ToDoRequests.Delete);
+            app.MapGet("/todos", ToDoRequests.GetAll)
+                .Produces<List<ToDo>>()
+                .WithTags("To Dos")
+                ;
+
+            app.MapGet("/todos/{id}", ToDoRequests.GetById)
+                .Produces<ToDo>()
+                .Produces(StatusCodes.Status404NotFound);
+                ;
+            app.MapPost("/todos", ToDoRequests.Create)
+                .Produces<ToDo>(StatusCodes.Status201Created)   
+                .Accepts<ToDo>("application/json")
+                ;
+            app.MapPut("/todos/{id}", ToDoRequests.Update)
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces(StatusCodes.Status404NotFound)
+                .Accepts<ToDo>("application/json")
+                ;
+            app.MapDelete("/todos/{id}", ToDoRequests.Delete)
+                .Produces (StatusCodes.Status204NoContent)
+                .Produces(StatusCodes.Status404NotFound)
+                ;
 
             return app;
         }
+
 
         public static IResult GetAll(IToDoService service)
         {
@@ -23,6 +41,7 @@
             return Results.Ok(todos);
 
         }
+
 
         public static IResult GetById(IToDoService service, Guid id)
         {
