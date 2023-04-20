@@ -24,11 +24,8 @@ app.UseHttpsRedirection();
 
 //Wykorzystanie delegaty do servisu
 
-app.MapGet("/todos", ToDoRequests.GetAll);
-app.MapGet("/todos/{id}",ToDoRequests.GetById);
-app.MapPost("/todos", ToDoRequests.Create);
-app.MapPut("/todos/{id}", ToDoRequests.Update);
-app.MapDelete("/todos/{id}",ToDoRequests.Delete);
+//ToDoRequests.RegisterEndpoints(app);
+app.RegisterEndpoints();
 
 //Wykorzystanie lambdy
 
