@@ -9,6 +9,7 @@
         {
             app.MapGet("/todos", ToDoRequests.GetAll)
                 .Produces<List<ToDo>>()
+                .WithTags("To Dos")
                 ;
 
             app.MapGet("/todos/{id}", ToDoRequests.GetById)
